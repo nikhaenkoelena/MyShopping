@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/toBuyFragment">
 
+    <fragment
+        android:id="@+id/toBuyFragment"
+        android:name="com.example.myshopping.ui.fragments.ToBuyFragment"
+        android:label="fragment_to_buy"
+        tools:layout="@layout/fragment_to_buy" >
+        <action
+            android:id="@+id/action_toBuyFragment_to_addNewPurchaseFragment"
+            app:destination="@id/addNewPurchaseFragment" />
+        <action
+            android:id="@+id/action_toBuyFragment_to_historyFragment"
+            app:destination="@id/historyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addNewPurchaseFragment"
+        android:name="com.example.myshopping.ui.fragments.AddNewPurchaseFragment"
+        android:label="fragment_add_new_purchase"
+        tools:layout="@layout/fragment_add_new_purchase" >
+        <action
+            android:id="@+id/action_addNewPurchaseFragment_to_toBuyFragment"
+            app:destination="@id/toBuyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyFragment"
+        android:name="com.example.myshopping.ui.fragments.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_toBuyFragment"
+            app:destination="@id/toBuyFragment" />
+    </fragment>
 </navigation>
