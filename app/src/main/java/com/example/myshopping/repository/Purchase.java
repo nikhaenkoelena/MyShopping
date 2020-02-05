@@ -1,7 +1,13 @@
 package com.example.myshopping.repository;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "purchases_table")
 public class Purchase {
 
+    @PrimaryKey(autoGenerate = true)
     private int uniqId;
     private String text;
     private String time;
@@ -16,6 +22,7 @@ public class Purchase {
         this.isBought = isBought;
     }
 
+    @Ignore
     public Purchase(String text, String time, String image, Boolean isBought) {
         this.text = text;
         this.time = time;
