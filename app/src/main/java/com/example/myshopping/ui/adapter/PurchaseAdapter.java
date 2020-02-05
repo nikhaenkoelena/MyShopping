@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myshopping.R;
 import com.example.myshopping.repository.Purchase;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,10 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
         holder.textViewPurchaseText.setText(purchase.getText());
         holder.textViewPurchsaseTime.setText(purchase.getTime());
         holder.checkBox.setChecked(purchase.getIsBought());
+        if (!purchase.getImage().isEmpty()) {
+            holder.textViewToSeeImage.setVisibility(View.VISIBLE);
+            Picasso.get().load(purchase.getImage()).into(holder.imageView);
+        }
     }
 
     @Override
@@ -56,11 +62,22 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
         @BindView(R.id.textViewPurchaseText) TextView textViewPurchaseText;
         @BindView(R.id.textViewPurchaseTime) TextView textViewPurchsaseTime;
         @BindView(R.id.checkBox) CheckBox checkBox;
+        @BindView(R.id.imageViewImageMain) ImageView imageView;
+        @BindView(R.id.textViewToSeeImage) TextView textViewToSeeImage;
 
         public PurchaseViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
+            textViewToSeeImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (imageView.getVisibility() == View.VISIBLE) {
+                        imageView.setVisibility(View.GONE);
+                    } else {
+                        imageView.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
         }
     }
 }

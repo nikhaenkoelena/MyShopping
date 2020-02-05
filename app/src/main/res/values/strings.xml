@@ -5,4 +5,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="to_buy">To buy</string>
     <string name="isBought">Bought</string>
+    <string name="error_loading_image">Error loading image. Please, try again</string>
+    <string name="add_image">Add image</string>
+    <string name="add_purchase">Add purchase</string>
+    <string name="hint_what_you_need_to_buy">What you need to buy?</string>
+    <string name="error_enter_purchase_text">Enter text of purchase</string>
+    <string name="image">Image</string>
 </resources>

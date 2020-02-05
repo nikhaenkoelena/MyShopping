@@ -3,7 +3,11 @@ package com.example.myshopping.ui.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +19,7 @@ import android.widget.TextView;
 import com.example.myshopping.R;
 import com.example.myshopping.repository.Purchase;
 import com.example.myshopping.ui.adapter.PurchaseAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +34,9 @@ public class ToBuyFragment extends Fragment {
     @BindView(R.id.recyclerViewPurchasesList) RecyclerView recyclerView;
     @BindView(R.id.textViewToBuyLabel) TextView textViewToBuy;
     @BindView(R.id.textViewBoughtLabel) TextView textViewBought;
+    @BindView(R.id.buttonAddNewPurchaseMain) FloatingActionButton button;
     private PurchaseAdapter adapter;
+    private NavController navController;
 
     private Unbinder unbinder;
 
@@ -39,16 +46,26 @@ public class ToBuyFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_to_buy, container, false);
         unbinder = ButterKnife.bind(this, view);
-        Purchase purchase = new Purchase(1, "Olalala", "12.15", true);
-        Purchase purchase2 = new Purchase(1, "Ohahaha", "12.20", false);
-        List<Purchase> purch = new ArrayList<>();
-        purch.add(purchase);
-        purch.add(purchase2);
         adapter = new PurchaseAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        adapter.setPurch(purch);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        navController = Navigation.findNavController(view);
+        onClickAddNewPurchase();
+    }
+
+    private void onClickAddNewPurchase () {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.action_toBuyFragment_to_addNewPurchaseFragment);
+            }
+        });
     }
 
     @Override

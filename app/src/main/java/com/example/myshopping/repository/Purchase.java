@@ -5,12 +5,21 @@ public class Purchase {
     private int uniqId;
     private String text;
     private String time;
+    private String image;
     private Boolean isBought;
 
-    public Purchase(int uniqId, String text, String time, Boolean isBought) {
+    public Purchase(int uniqId, String text, String time, String image, Boolean isBought) {
         this.uniqId = uniqId;
         this.text = text;
         this.time = time;
+        this.image = image;
+        this.isBought = isBought;
+    }
+
+    public Purchase(String text, String time, String image, Boolean isBought) {
+        this.text = text;
+        this.time = time;
+        this.image = image;
         this.isBought = isBought;
     }
 
@@ -44,5 +53,13 @@ public class Purchase {
 
     public void setIsBought(Boolean isBought) {
         this.isBought = isBought;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
