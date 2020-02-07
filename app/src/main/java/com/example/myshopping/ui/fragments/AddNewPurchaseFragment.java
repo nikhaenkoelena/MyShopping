@@ -2,6 +2,7 @@ package com.example.myshopping.ui.fragments;
 
 
 import android.content.Intent;
+import android.icu.util.LocaleData;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -22,11 +23,18 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.myshopping.R;
+import com.example.myshopping.presenter.AddNewPurchasePresenter;
 import com.example.myshopping.repository.Purchase;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,14 +44,20 @@ import static android.app.Activity.RESULT_OK;
 
 public class AddNewPurchaseFragment extends Fragment {
 
-    @BindView(R.id.editTextPurchaseText) EditText editText;
-    @BindView(R.id.buttonAddImage) Button buttonAddImage;
-    @BindView(R.id.imageViewImage) ImageView imageView;
-    @BindView(R.id.buttonAddNewPurchaseSecond) Button buttonAddPurchase;
-    @BindView(R.id.buttonCloseImage) ImageButton buttonCloseImage;
+    @BindView(R.id.editTextPurchaseText)
+    EditText editText;
+    @BindView(R.id.buttonAddImage)
+    Button buttonAddImage;
+    @BindView(R.id.imageViewImage)
+    ImageView imageView;
+    @BindView(R.id.buttonAddNewPurchaseSecond)
+    Button buttonAddPurchase;
+    @BindView(R.id.buttonCloseImage)
+    ImageButton buttonCloseImage;
 
     private Uri imageUri;
 
+    private AddNewPurchasePresenter presenter;
     private NavController navController;
     private Unbinder unbinder;
 
@@ -54,8 +68,10 @@ public class AddNewPurchaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       View view = inflater.inflate(R.layout.fragment_add_new_purchase, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_new_purchase, container, false);
+        Objects.requireNonNull(getActivity()).setTitle(R.string.app_title);
         unbinder = ButterKnife.bind(this, view);
+        presenter = new AddNewPurchasePresenter(getContext());
         return view;
     }
 
@@ -71,10 +87,10 @@ public class AddNewPurchaseFragment extends Fragment {
         buttonAddImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("image/jpeg");
-                        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                        startActivityForResult(intent, RC_GET_IMAGE);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(intent, RC_GET_IMAGE);
             }
         });
     }
@@ -98,7 +114,7 @@ public class AddNewPurchaseFragment extends Fragment {
         }
     }
 
-    private void closeImage () {
+    private void closeImage() {
         buttonCloseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +125,7 @@ public class AddNewPurchaseFragment extends Fragment {
         });
     }
 
-    private void onClickAddPurchase () {
+    private void onClickAddPurchase() {
         buttonAddPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,8 +133,9 @@ public class AddNewPurchaseFragment extends Fragment {
                 if (text.isEmpty()) {
                     Toast.makeText(getContext(), getString(R.string.error_enter_purchase_text), Toast.LENGTH_SHORT).show();
                 }
-                Date currentTime = Calendar.getInstance().getTime();
-                Purchase purchase = new Purchase(text, currentTime.toString(), imageUri.toString(), UNDONE_PURCHASE);
+                LocalDateTime time = LocalDateTime.now();
+                Purchase purchase = new Purchase(text, time.toString(), imageUri.toString(), UNDONE_PURCHASE);
+                presenter.insertPurchase(purchase);
                 navController.navigate(R.id.action_addNewPurchaseFragment_to_toBuyFragment);
             }
         });
@@ -128,5 +145,6 @@ public class AddNewPurchaseFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        presenter.dispose();
     }
 }

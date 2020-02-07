@@ -11,4 +11,7 @@
     <string name="hint_what_you_need_to_buy">What you need to buy?</string>
     <string name="error_enter_purchase_text">Enter text of purchase</string>
     <string name="image">Image</string>
+    <string name="main_page">Main</string>
+    <string name="history_page">History</string>
+    <string name="app_title">MyShopping</string>
 </resources>
