@@ -1,6 +1,7 @@
 package com.example.myshopping.ui.fragments;
 
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,7 +13,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +20,17 @@ import android.widget.TextView;
 
 import com.example.myshopping.R;
 import com.example.myshopping.presenter.ToBuyPresenter;
+import com.example.myshopping.repository.HistoryItem;
 import com.example.myshopping.repository.Purchase;
 import com.example.myshopping.ui.adapter.PurchaseAdapter;
-import com.example.myshopping.ui.adapter.PurchaseAdapter$PurchaseViewHolder_ViewBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +54,7 @@ public class ToBuyFragment extends Fragment implements ToBuyInterface {
 
     private static final Boolean ISNOTBOUGHT = false;
     private static final Boolean ISBOUGHT = true;
+    private final String STATUS_DELETED = "Deleted";
 
 
     @Override
@@ -84,11 +86,15 @@ public class ToBuyFragment extends Fragment implements ToBuyInterface {
                     Purchase purchase = adapter.getPurchaseTemp();
                     adapter.removePurchase(viewHolder.getAdapterPosition());
                     presenter.deletePurchase(purchase.getUniqId());
+                    DateTimeFormatter formater = DateTimeFormatter.ofPattern(" MMM dd, hh:mm ");
+                    String time = LocalDateTime.now().format(formater);
+                    presenter.insertHistoryItem(new HistoryItem(purchase.getText(), time, purchase.getImage(), STATUS_DELETED));
                 }
             }
         }).attachToRecyclerView(recyclerView);
 
         textViewToBuy.setTextColor(getResources().getColor(R.color.colorAccent));
+        textViewToBuy.setTypeface(Typeface.DEFAULT_BOLD);
         textViewBought.setTextColor(getResources().getColor(R.color.colorPrimary));
         presenter.getAllPurchases(ISNOTBOUGHT);
         onClickAddNewPurchase();
@@ -99,7 +105,7 @@ public class ToBuyFragment extends Fragment implements ToBuyInterface {
     @Override
     public void setPurchases(List<Purchase> purchases) {
         Comparator<Purchase> comparator = Comparator
-                .comparing(Purchase::getTime);
+                .comparing(Purchase::getTime).reversed();
         Collections.sort(purchases, comparator);
         adapter.setPurch(purchases);
     }
@@ -119,6 +125,7 @@ public class ToBuyFragment extends Fragment implements ToBuyInterface {
             public void onClick(View v) {
                 presenter.getAllPurchases(ISNOTBOUGHT);
                 textViewToBuy.setTextColor(getResources().getColor(R.color.colorAccent));
+                textViewToBuy.setTypeface(Typeface.DEFAULT_BOLD);
                 textViewBought.setTextColor(getResources().getColor(R.color.colorPrimary));
             }
         });
@@ -131,6 +138,7 @@ public class ToBuyFragment extends Fragment implements ToBuyInterface {
             public void onClick(View v) {
                 presenter.getAllPurchases(ISBOUGHT);
                 textViewBought.setTextColor(getResources().getColor(R.color.colorAccent));
+                textViewBought.setTypeface(Typeface.DEFAULT_BOLD);
                 textViewToBuy.setTextColor(getResources().getColor(R.color.colorPrimary));
             }
         });

@@ -2,6 +2,7 @@ package com.example.myshopping.presenter;
 
 import android.content.Context;
 
+import com.example.myshopping.repository.HistoryItem;
 import com.example.myshopping.repository.Purchase;
 import com.example.myshopping.repository.Repository;
 import com.example.myshopping.ui.fragments.ToBuyInterface;
@@ -30,12 +31,20 @@ public class ToBuyPresenter {
         toBuyInterface.setPurchases(purchases);
     }
 
-    public void updatePurchaseState (int id, boolean isChecked) {
+    public void updatePurchaseState(int id, boolean isChecked) {
         repository.updatePurchaseState(id, isChecked);
     }
 
     public void deletePurchase(int id) {
         repository.deletePurchase(id);
+    }
+
+    public void insertHistoryItem(HistoryItem item) {
+        repository.insertHistoryItem(item);
+    }
+
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
     public void dispose() {

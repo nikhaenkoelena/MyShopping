@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.myshopping.R;
 import com.example.myshopping.presenter.AddNewPurchasePresenter;
+import com.example.myshopping.repository.HistoryItem;
 import com.example.myshopping.repository.Purchase;
 import com.squareup.picasso.Picasso;
 
@@ -63,6 +64,7 @@ public class AddNewPurchaseFragment extends Fragment {
 
     private final static int RC_GET_IMAGE = 100;
     private final static boolean UNDONE_PURCHASE = false;
+    private final String STATUS_ADDED = "Added";
 
 
     @Override
@@ -130,13 +132,21 @@ public class AddNewPurchaseFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String text = editText.getText().toString().trim();
+                String uri = null;
                 if (text.isEmpty()) {
                     Toast.makeText(getContext(), getString(R.string.error_enter_purchase_text), Toast.LENGTH_SHORT).show();
                 }
-                LocalDateTime time = LocalDateTime.now();
-                Purchase purchase = new Purchase(text, time.toString(), imageUri.toString(), UNDONE_PURCHASE);
+                DateTimeFormatter formater = DateTimeFormatter.ofPattern(" MMM dd, hh:mm ");
+                String time = LocalDateTime.now().format(formater);
+                if (imageUri == null) {
+                    uri = null;
+                } else {
+                    uri = imageUri.toString();
+                }
+                Purchase purchase = new Purchase(text, time, uri, UNDONE_PURCHASE);
                 presenter.insertPurchase(purchase);
                 navController.navigate(R.id.action_addNewPurchaseFragment_to_toBuyFragment);
+                presenter.insertAddingToHistory(new HistoryItem(text, time, uri, STATUS_ADDED));
             }
         });
     }

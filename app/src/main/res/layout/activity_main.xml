@@ -10,14 +10,17 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="?attr/colorAccent"
         android:minHeight="?attr/actionBarSize"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="3dp"
+        app:theme="@style/ToolbarColoredBackArrow"
         app:popupTheme="@style/AppTheme"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:titleTextColor="@color/colorWhite"
+        app:subtitleTextColor="@color/colorWhite"/>
 
     <fragment
         android:id="@+id/nav_host_fragment"

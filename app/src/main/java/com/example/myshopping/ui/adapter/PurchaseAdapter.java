@@ -1,6 +1,7 @@
 package com.example.myshopping.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myshopping.R;
 import com.example.myshopping.presenter.ToBuyPresenter;
+import com.example.myshopping.repository.HistoryItem;
 import com.example.myshopping.repository.Purchase;
 import com.example.myshopping.ui.fragments.ToBuyInterface;
 import com.squareup.picasso.Picasso;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +35,9 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
     private Purchase purchaseTemp;
     private ToBuyPresenter presenter;
     private Context context;
+
+    private final String STATUS_BOUGHT = "Bought";
+    private final String STATUS_ADDED = "Added";
 
     public PurchaseAdapter(Context context, ToBuyInterface toBuyInterface) {
         purch = new ArrayList<>();
@@ -65,12 +72,10 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
         purchaseTemp = purchase;
         holder.textViewPurchaseText.setText(purchase.getText());
         holder.textViewPurchsaseTime.setText(purchase.getTime());
-        holder.checkBox.setTag(purchase.getUniqId());
+        holder.checkBox.setTag(purchase);
         holder.checkBox.setChecked(purchase.getIsBought());
-        Log.i("Проверка ид", purchase.getText());
-        Log.i("Проверка логики", Boolean.toString(purchase.getIsBought()));
-        if (!purchase.getImage().isEmpty()) {
-            holder.textViewToSeeImage.setVisibility(View.VISIBLE);
+        if (purchase.getImage() != null) {
+            holder.textViewPurchaseText.setTextColor(Color.BLUE);
             Picasso.get().load(purchase.getImage()).into(holder.imageView);
         }
     }
@@ -96,7 +101,7 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
         public PurchaseViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            textViewToSeeImage.setOnClickListener(new View.OnClickListener() {
+            textViewPurchaseText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (imageView.getVisibility() == View.VISIBLE) {
@@ -110,9 +115,16 @@ public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.Purcha
                 @Override
                 public void onClick(View v) {
                     final boolean isChecked = checkBox.isChecked();
-                    int id = (Integer) checkBox.getTag();
-                    Log.i("Проверка", Boolean.toString(isChecked));
+                    Purchase purchase = (Purchase) checkBox.getTag();
+                    int id = purchase.getUniqId();
                     presenter.updatePurchaseState(id, isChecked);
+                    DateTimeFormatter formater = DateTimeFormatter.ofPattern(" MMM dd, hh:mm ");
+                    String time = LocalDateTime.now().format(formater);
+                    if (isChecked) {
+                        presenter.insertHistoryItem(new HistoryItem(purchase.getText(), time, purchase.getImage(), STATUS_BOUGHT));
+                    } else {
+                        presenter.insertHistoryItem(new HistoryItem(purchase.getText(), time, purchase.getImage(), STATUS_ADDED));
+                    }
                 }
             });
         }

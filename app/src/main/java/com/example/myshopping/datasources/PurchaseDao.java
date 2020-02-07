@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.example.myshopping.repository.HistoryItem;
 import com.example.myshopping.repository.Purchase;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import io.reactivex.Observable;
 public abstract class PurchaseDao {
 
     @Transaction
-    public void updatePurchaseState (int id, boolean isBought) {
+    public void updatePurchaseState(int id, boolean isBought) {
         updatePurchase(id, isBought);
         getAllPurchases(!isBought);
     }
@@ -33,5 +34,17 @@ public abstract class PurchaseDao {
 
     @Query("UPDATE purchases_table SET isBought = :isBought WHERE uniqId == :id ")
     public abstract void updatePurchase(int id, boolean isBought);
+
+    @Query("SELECT * FROM historytable")
+    public abstract Observable<List<HistoryItem>> getHistoryItems();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    public abstract void insertAddingToHistory(HistoryItem item);
+
+    @Query("DELETE FROM purchases_table")
+    public abstract void deleteAll();
+
+    @Query("DELETE FROM historytable")
+    public abstract void deleteHist();
 
 }

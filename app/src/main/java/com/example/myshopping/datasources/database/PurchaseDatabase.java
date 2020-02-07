@@ -7,9 +7,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.example.myshopping.datasources.PurchaseDao;
+import com.example.myshopping.repository.HistoryItem;
 import com.example.myshopping.repository.Purchase;
 
-@Database(entities = {Purchase.class}, version = 1, exportSchema = false)
+@Database(entities = {Purchase.class, HistoryItem.class}, version = 3, exportSchema = false)
 public abstract class PurchaseDatabase extends RoomDatabase {
 
     private static PurchaseDatabase database;

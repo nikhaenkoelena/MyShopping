@@ -3,6 +3,7 @@ package com.example.myshopping.repository;
 import android.content.Context;
 
 import com.example.myshopping.datasources.database.PurchaseDatabase;
+import com.example.myshopping.presenter.HistoryPresenter;
 import com.example.myshopping.presenter.ToBuyPresenter;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class Repository {
                 .subscribe());
     }
 
-    public void updatePurchaseState (final int id, final boolean isChecked) {
+    public void updatePurchaseState(final int id, final boolean isChecked) {
         compositeDisposable.add(Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
@@ -66,7 +67,7 @@ public class Repository {
                 .subscribe());
     }
 
-    public void updatePurchase (final int id, final boolean isChecked) {
+    public void updatePurchase(final int id, final boolean isChecked) {
         compositeDisposable.add(Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
@@ -77,7 +78,7 @@ public class Repository {
                 .subscribe());
     }
 
-    public void deletePurchase (int id) {
+    public void deletePurchase(int id) {
         compositeDisposable.add(Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
@@ -87,6 +88,59 @@ public class Repository {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe());
     }
+
+    public void getHistoryItems(HistoryPresenter presenter) {
+        compositeDisposable.add(database.purchaseDao().getHistoryItems()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<HistoryItem>>() {
+                    @Override
+                    public void accept(List<HistoryItem> historyItems) throws Exception {
+                        presenter.setHistoryItems(historyItems);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                }));
+    }
+
+    public void insertHistoryItem(HistoryItem item) {
+        compositeDisposable.add(Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                if (item != null) {
+                    database.purchaseDao().insertAddingToHistory(item);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe());
+    }
+
+    public void deleteAll() {
+        compositeDisposable.add(Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                database.purchaseDao().deleteAll();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe());
+    }
+
+    public void deleteHist() {
+        compositeDisposable.add(Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                database.purchaseDao().deleteHist();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe());
+    }
+
 
     public void dispose() {
         if (compositeDisposable != null) {
